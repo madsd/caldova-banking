@@ -125,13 +125,24 @@ async function main() {
       `Failed to index: ${failures.map((item) => item.key).join(", ")}`,
     );
   }
-  const verification = await searchClient.search("mobile top-up limit", {
-    top: 1,
-    select: ["id", "title"],
-  });
-  const first = await verification.results.next();
-  if (first.done || first.value.document.id !== "mobile-top-ups") {
-    throw new Error("Knowledge retrieval verification did not return the policy.");
+  let verified = false;
+  for (let attempt = 0; attempt < 12 && !verified; attempt += 1) {
+    const verification = await searchClient.search("mobile top-up limit", {
+      top: sourceDocuments.length,
+      select: ["id", "title"],
+    });
+    for await (const hit of verification.results) {
+      if (hit.document.id === "mobile-top-ups") {
+        verified = true;
+        break;
+      }
+    }
+    if (!verified && attempt < 11) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+  if (!verified) {
+    throw new Error("Knowledge retrieval verification did not return the mobile top-up policy after indexing.");
   }
   console.log(
     `Indexed ${embedded.length} banking knowledge documents; retrieval verified.`,

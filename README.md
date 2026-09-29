@@ -51,7 +51,17 @@ Persona selection is for synthetic demo records only.
 `azure.yaml`, `infra/` and the two Dockerfiles define an `azd` deployment:
 Container Apps for web and worker, Foundry, Search, SQL, Service Bus, Blob
 Storage and monitoring. Provision a **new** AZD environment with your own
-subscription, region, Azure identity and demo-key hash, then use `azd up`.
+subscription, region, Azure identity and demo-key hash. Before
+`azd provision --no-prompt`, configure these Bicep inputs with
+`azd env config set infra.parameters.<name> <value> -e <environment>`:
+`environmentName`, `location`, `principalId`, `principalName`, `tenantId`
+and `demoAccessKeyHash`. The principal is the deploying Entra user, who
+becomes SQL admin and can seed the synthetic database. Keep the hash only
+in local AZD state, never in source. The AZD environment must also contain
+`AZURE_SUBSCRIPTION_ID` and `AZURE_LOCATION`; confirm a distinct resource
+group in `azd provision --preview --no-prompt -e <environment>` before
+deploying. Provision first, wait for ACR managed-identity role propagation,
+then run `azd deploy --no-prompt -e <environment>`.
 The post-provision hook runs `npm run db:migrate` and
 `npm run knowledge:index`; both require appropriate Azure permissions.
 Changes to the web app can be deployed with `azd deploy web` in that
