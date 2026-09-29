@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+.next
+**/.next
+.azure
+.git
+npm-debug.log
+.playwright-mcp
+artifacts
+index.html
+app.js
+/*.png
+live-format-scripts.json
+**/.env*
+infra/main.json

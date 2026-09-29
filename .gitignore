@@ -1,0 +1,34 @@
+# Local environment and credentials
+.azure/
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+
+# Dependencies, builds and tool state
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+coverage/
+*.tsbuildinfo
+src/web/next-env.d.ts
+.playwright-mcp/
+*.log
+infra/main.json
+
+# Local design prototype and verification captures (not part of the app)
+/index.html
+/app.js
+/artifacts/
+/*.png
+/live-format-scripts.json
+/src/web/public/file.svg
+/src/web/public/globe.svg
+/src/web/public/next.svg
+/src/web/public/vercel.svg
+/src/web/public/window.svg

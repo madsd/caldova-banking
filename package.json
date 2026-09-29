@@ -1,0 +1,25 @@
+{
+  "name": "caldova-agentic-banking",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "src/web",
+    "src/worker"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @caldova/web",
+    "build": "npm run build --workspace @caldova/web && npm run build --workspace @caldova/worker",
+    "lint": "npm run lint --workspace @caldova/web && npm run lint --workspace @caldova/worker",
+    "test": "vitest run",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "knowledge:index": "tsx scripts/index-knowledge.ts",
+    "deployment:verify": "tsx scripts/verify-deployment.ts"
+  },
+  "devDependencies": {
+    "@types/mssql": "^12.3.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  }
+}

@@ -1,0 +1,28 @@
+name: caldova-agentic-banking
+metadata:
+  template: caldova-agentic-banking@0.1.0
+services:
+  web:
+    project: ./src/web
+    language: js
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: ../..
+      remoteBuild: true
+  worker:
+    project: ./src/worker
+    language: js
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: ../..
+      remoteBuild: true
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: az containerapp registry set --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_WEB_NAME --resource-group $env:AZURE_RESOURCE_GROUP --server $env:AZURE_CONTAINER_REGISTRY_ENDPOINT --identity system --output none && az containerapp registry set --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_WORKER_NAME --resource-group $env:AZURE_RESOURCE_GROUP --server $env:AZURE_CONTAINER_REGISTRY_ENDPOINT --identity system --output none && npm run db:migrate && npm run knowledge:index
+    posix:
+      shell: sh
+      run: az containerapp registry set --subscription "$AZURE_SUBSCRIPTION_ID" --name "$SERVICE_WEB_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --server "$AZURE_CONTAINER_REGISTRY_ENDPOINT" --identity system --output none && az containerapp registry set --subscription "$AZURE_SUBSCRIPTION_ID" --name "$SERVICE_WORKER_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --server "$AZURE_CONTAINER_REGISTRY_ENDPOINT" --identity system --output none && npm run db:migrate && npm run knowledge:index
